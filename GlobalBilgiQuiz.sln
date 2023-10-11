@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33516.290
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlobalBilgiQuiz.MVC", "GlobalBilgiQuiz.MVC\GlobalBilgiQuiz.MVC.csproj", "{D1012495-79DA-442B-AE3D-640EF55CEA41}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlobalBilgiQuiz.Data", "GlobalBilgiQuiz.Data\GlobalBilgiQuiz.Data.csproj", "{7C1FA622-5E63-4345-8FC8-AE7F441FCB14}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlobalBilgiQuiz.Database", "GlobalBilgiQuiz.Database\GlobalBilgiQuiz.Database.csproj", "{398D14D6-7AB6-440A-BDE4-C64F38396D75}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlobalBilgiQuiz.Business", "GlobalBilgiQuiz.Business\GlobalBilgiQuiz.Business.csproj", "{4B62E141-0854-490F-BC2F-AA903A01F1A3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlobalBilgiQuiz.Helper", "GlobalBilgiQuiz.Helper\GlobalBilgiQuiz.Helper.csproj", "{68F76201-D7ED-4DE0-AAC2-47ECE3218456}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GlobalBilgiQuiz.Console", "GlobalBilgiQuiz.Console\GlobalBilgiQuiz.Console.csproj", "{0E88A526-99DF-4F2A-9EB4-954E3F474F4D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D1012495-79DA-442B-AE3D-640EF55CEA41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1012495-79DA-442B-AE3D-640EF55CEA41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1012495-79DA-442B-AE3D-640EF55CEA41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1012495-79DA-442B-AE3D-640EF55CEA41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C1FA622-5E63-4345-8FC8-AE7F441FCB14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C1FA622-5E63-4345-8FC8-AE7F441FCB14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C1FA622-5E63-4345-8FC8-AE7F441FCB14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C1FA622-5E63-4345-8FC8-AE7F441FCB14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{398D14D6-7AB6-440A-BDE4-C64F38396D75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{398D14D6-7AB6-440A-BDE4-C64F38396D75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{398D14D6-7AB6-440A-BDE4-C64F38396D75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{398D14D6-7AB6-440A-BDE4-C64F38396D75}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B62E141-0854-490F-BC2F-AA903A01F1A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B62E141-0854-490F-BC2F-AA903A01F1A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B62E141-0854-490F-BC2F-AA903A01F1A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B62E141-0854-490F-BC2F-AA903A01F1A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68F76201-D7ED-4DE0-AAC2-47ECE3218456}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68F76201-D7ED-4DE0-AAC2-47ECE3218456}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68F76201-D7ED-4DE0-AAC2-47ECE3218456}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68F76201-D7ED-4DE0-AAC2-47ECE3218456}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E88A526-99DF-4F2A-9EB4-954E3F474F4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E88A526-99DF-4F2A-9EB4-954E3F474F4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E88A526-99DF-4F2A-9EB4-954E3F474F4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E88A526-99DF-4F2A-9EB4-954E3F474F4D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0022DAB9-26A4-45E3-8F10-FAA450510B88}
+	EndGlobalSection
+EndGlobal

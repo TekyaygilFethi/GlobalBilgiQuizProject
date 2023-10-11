@@ -1,0 +1,19 @@
+﻿<form action="@Url.Action("Start","Admin")" method="post">
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @TempData["ErrorMessage"].ToString()
+        </div>
+    }
+    <div class="form-group">
+        <label for="exampleInputEmail1">Kullanıcı Adı</label>
+        <input type="text" class="form-control" id="Username" name="Username" aria-describedby="emailHelp" placeholder="Kullanıcı Adı">
+        @*<small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>*@
+    </div>
+    <div class="form-group">
+        <label for="exampleInputPassword1">Şifre</label>
+        <input type="password" class="form-control" id="Password" name="Password" placeholder="Şifre">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
