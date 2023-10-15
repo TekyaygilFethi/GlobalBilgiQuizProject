@@ -1,3 +1,4 @@
+using GlobalBilgiQuiz.Business;
 using GlobalBilgiQuiz.Business.Repositories;
 using GlobalBilgiQuiz.Business.Services.AdminServiceFolder;
 using GlobalBilgiQuiz.Business.Services.QuizServiceFolder;
@@ -8,11 +9,12 @@ using GlobalBilgiQuiz.Database.DbContexts;
 using GlobalBilgiQuiz.MVC.Filters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Newtonsoft.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 
-services.AddControllersWithViews();
+services.AddControllersWithViews().AddNewtonsoftJson(opt => opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
 
 services.AddDbContext<GlobalBilgiQuizDbContext>(options =>
 {
@@ -21,6 +23,7 @@ services.AddDbContext<GlobalBilgiQuizDbContext>(options =>
 
 services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
+services.AddApplicationServices(builder.Configuration);
 services.AddScoped<IQuizService, QuizService>();
 services.AddScoped<IAdminService, AdminService>();
 services.AddScoped<IUnitOfWork, UnitOfWork>();
