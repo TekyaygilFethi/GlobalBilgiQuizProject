@@ -15,11 +15,11 @@ namespace GlobalBilgiQuiz.Business.Services.QuizServiceFolder
         private readonly IRepository<Question> _questionRepository;
         private readonly IRepository<Answer> _answerRepository;
         private readonly IRepository<Metric> _metricRepository;
-        private readonly RedisService _redisService;
+        private readonly IRedisService _redisService;
         public QuizService(IRepository<Question> questionRepository,
             IRepository<Answer> answerRepository,
             IRepository<Metric> metricRepository,
-            RedisService redisService) : base()
+            IRedisService redisService) : base()
         {
             _questionRepository = questionRepository;
             _answerRepository = answerRepository;

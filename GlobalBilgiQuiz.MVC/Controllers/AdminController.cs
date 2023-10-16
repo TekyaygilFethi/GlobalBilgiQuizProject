@@ -1,4 +1,5 @@
 ﻿using GlobalBilgiQuiz.Business.Services.AdminServiceFolder;
+using GlobalBilgiQuiz.Business.Services.RedisServiceFolder;
 using GlobalBilgiQuiz.Business.SignalRHubs;
 using GlobalBilgiQuiz.Business.UnitOfWorkFolder;
 using GlobalBilgiQuiz.Data.Services.AdminServiceFolder;
@@ -17,14 +18,16 @@ namespace GlobalBilgiQuiz.MVC.Controllers
         private readonly string _counterDateFilePath = string.Empty;
         private readonly string _currentQuestionFilePath = string.Empty;
         private IHubContext<QuizHub> _quizHubContext;
+        private readonly IRedisService _redisService;
 
 
-        public AdminController(IAdminService adminService, IWebHostEnvironment environment, IHubContext<QuizHub> quizHubContext, IUnitOfWork uow) : base(uow)
+        public AdminController(IAdminService adminService, IWebHostEnvironment environment, IHubContext<QuizHub> quizHubContext, IRedisService redisService, IUnitOfWork uow) : base(uow)
         {
             _adminService = adminService;
             _counterDateFilePath = Path.Combine(environment.WebRootPath, "files", "CounterDateFile.txt");
             _currentQuestionFilePath = Path.Combine(environment.WebRootPath, "files", "CurrentQuestion.txt");
             _quizHubContext = quizHubContext;
+            _redisService = redisService;
         }
 
         public IActionResult Start()
@@ -54,13 +57,13 @@ namespace GlobalBilgiQuiz.MVC.Controllers
         [ServiceFilter(typeof(AdminFilter)), HttpPost]
         public async Task<IActionResult> StartContestPost()
         {
-            System.IO.File.WriteAllText(_counterDateFilePath, DateTime.Now.AddSeconds(32).ToString("dd.MM.yyyy HH:mm:ss"));
+            _redisService.GetDb().StringSet("kalanZaman", DateTime.Now.AddSeconds(32).ToString("dd.MM.yyyy HH:mm:ss"));
 
-            int currentQuestion = int.Parse(System.IO.File.ReadAllText(_currentQuestionFilePath));
+            var currentQuestion = _redisService.GetDb().StringGet("simdikiSoru"); 
 
-            if(currentQuestion == 0)
+            if(!currentQuestion.HasValue || currentQuestion == "0")
             {
-                System.IO.File.WriteAllText(_currentQuestionFilePath, "1");
+                _redisService.GetDb().StringSet("simdikiSoru", 1);
             }
 
             await _quizHubContext.Clients.All.SendAsync("startcontest");

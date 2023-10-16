@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GlobalBilgiQuiz.Business.Services.RedisServiceFolder
 {
-    public class RedisService
+    public class RedisService:IRedisService
     {
         private readonly string _host;
         private readonly int _port;

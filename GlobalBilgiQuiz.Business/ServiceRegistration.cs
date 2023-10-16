@@ -12,10 +12,10 @@ namespace GlobalBilgiQuiz.Business
         {
 
             services.Configure<RedisSettings>(configuration.GetSection("RedisSettings"));
-            services.AddSingleton<RedisService>(sp =>
+            services.AddSingleton<IRedisService>(sp =>
             {
                 var redisSettings = sp.GetRequiredService<IOptions<RedisSettings>>().Value;
-                var redis = new RedisService(redisSettings.Host, redisSettings.Port);
+                IRedisService redis = new RedisService(redisSettings.Host, redisSettings.Port);
                 redis.Connect();
                 return redis;
             });
