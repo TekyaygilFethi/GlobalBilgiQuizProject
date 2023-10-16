@@ -1,9 +1,11 @@
 using GlobalBilgiQuiz.Business.Repositories;
 using GlobalBilgiQuiz.Business.Services.AdminServiceFolder;
+using GlobalBilgiQuiz.Business.Services.CacheServiceFolder;
 using GlobalBilgiQuiz.Business.Services.QuizServiceFolder;
 using GlobalBilgiQuiz.Business.SignalRHubs;
 using GlobalBilgiQuiz.Business.UnitOfWorkFolder;
 using GlobalBilgiQuiz.Data.POCO;
+using GlobalBilgiQuiz.Data.Services.RedisServiceFolder;
 using GlobalBilgiQuiz.Database.DbContexts;
 using GlobalBilgiQuiz.MVC.Filters;
 using Microsoft.EntityFrameworkCore;
@@ -19,7 +21,11 @@ services.AddDbContext<GlobalBilgiQuizDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetSection("ConnectionStrings:Dev").Value);
 }, ServiceLifetime.Scoped, ServiceLifetime.Scoped);
 
+var redisConfiguration = builder.Configuration.GetSection("ConnectionStrings").Get<RedisConfiguration>();
+services.AddSingleton(redisConfiguration);
+
 services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+services.AddScoped(typeof(ICacheService<>), typeof(CacheService<>));
 
 services.AddScoped<IQuizService, QuizService>();
 services.AddScoped<IAdminService, AdminService>();

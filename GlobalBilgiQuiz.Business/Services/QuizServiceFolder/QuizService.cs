@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GlobalBilgiQuiz.Business.Services.CacheServiceFolder;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace GlobalBilgiQuiz.Business.Services.QuizServiceFolder
@@ -18,19 +19,30 @@ namespace GlobalBilgiQuiz.Business.Services.QuizServiceFolder
         private readonly IRepository<Question> _questionRepository;
         private readonly IRepository<Answer> _answerRepository;
         private readonly IRepository<Metric> _metricRepository;
+        private readonly ICacheService<Question> _questionCacheService;
         public QuizService(IRepository<Question> questionRepository,
             IRepository<Answer> answerRepository,
-            IRepository<Metric> metricRepository) : base()
+            IRepository<Metric> metricRepository, ICacheService<Question> questionCacheService) : base()
         {
             _questionRepository = questionRepository;
             _answerRepository = answerRepository;
             _metricRepository = metricRepository;
+            _questionCacheService = questionCacheService;
         }
 
         public ContestObject GetQuestionObject(int currentQuestionOrder)
         {
-            var questionObject = _questionRepository
-                .GetSingle(_ => _.Order == currentQuestionOrder, includeExpressions: new List<string> { "Answers" });
+
+            Question questionObject = null;
+            if (!_questionCacheService.Exists("Question"))
+            {
+                questionObject = _questionRepository
+                   .GetSingle(_ => _.Order == currentQuestionOrder, includeExpressions: new List<string> { "Answers" });
+                _questionCacheService.Set("Question", questionObject, DateTimeOffset.UtcNow.AddMinutes(3));
+            }
+
+            questionObject = _questionCacheService.Get<Question>("Question");
+
 
             return new ContestObject
             {
