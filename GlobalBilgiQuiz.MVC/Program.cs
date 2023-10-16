@@ -21,11 +21,14 @@ services.AddDbContext<GlobalBilgiQuizDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetSection("ConnectionStrings:Dev").Value);
 }, ServiceLifetime.Scoped, ServiceLifetime.Scoped);
 
-var redisConfiguration = builder.Configuration.GetSection("ConnectionStrings").Get<RedisConfiguration>();
-services.AddSingleton(redisConfiguration);
+var configuration = builder.Configuration;
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = configuration.GetSection("ConnectionStrings:RedisConnection")?.Value;
+});
 
 services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-services.AddScoped(typeof(ICacheService<>), typeof(CacheService<>));
+services.AddScoped<ICacheService, CacheService>();
 
 services.AddScoped<IQuizService, QuizService>();
 services.AddScoped<IAdminService, AdminService>();

@@ -1,4 +1,5 @@
-﻿using GlobalBilgiQuiz.Business.Services.QuizServiceFolder;
+﻿using GlobalBilgiQuiz.Business.Services.CacheServiceFolder;
+using GlobalBilgiQuiz.Business.Services.QuizServiceFolder;
 using GlobalBilgiQuiz.Business.SignalRHubs;
 using GlobalBilgiQuiz.Business.UnitOfWorkFolder;
 using GlobalBilgiQuiz.Data.MVC.Home;
@@ -21,14 +22,16 @@ namespace GlobalBilgiQuiz.MVC.Controllers
         private string _currentQuestionFilePath = string.Empty;
         private IQuizService _quizService;
         private IHubContext<QuizHub> _quizHubContext;
+        private ICacheService _cacheService;
 
-        public HomeController(ILogger<HomeController> logger, IWebHostEnvironment environment, IQuizService quizService, IHubContext<QuizHub> quizHubContext, IUnitOfWork uow):base(uow)
+        public HomeController(ILogger<HomeController> logger, IWebHostEnvironment environment, IQuizService quizService, IHubContext<QuizHub> quizHubContext, ICacheService cacheService, IUnitOfWork uow):base(uow)
         {
             _logger = logger;
             _counterDataFilePath = Path.Combine(environment.WebRootPath, "files", "CounterDateFile.txt");
             _currentQuestionFilePath = Path.Combine(environment.WebRootPath, "files", "CurrentQuestion.txt");
             _quizService = quizService;
             _quizHubContext = quizHubContext;
+            _cacheService = cacheService;
         }
 
         public IActionResult Index()
@@ -40,7 +43,8 @@ namespace GlobalBilgiQuiz.MVC.Controllers
         [Route("yarisma"), ActionName("Contest")]
         public IActionResult Contest()
         {
-            int currentQuestionOrder = int.Parse(System.IO.File.ReadAllText(_currentQuestionFilePath));
+
+            int currentQuestionOrder = _cacheService.Get<int>("CurrentQuestion");
 
             var question = _quizService.GetQuestionObject(currentQuestionOrder);
 

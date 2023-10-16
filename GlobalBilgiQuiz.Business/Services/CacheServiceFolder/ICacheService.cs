@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GlobalBilgiQuiz.Business.Services.CacheServiceFolder
 {
-    public interface ICacheService<T>
+    public interface ICacheService
     {
         T Get<T>(string key);
         bool Set<T>(string key, T value, DateTimeOffset expirationTime);

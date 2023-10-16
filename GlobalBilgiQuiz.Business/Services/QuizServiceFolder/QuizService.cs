@@ -19,10 +19,10 @@ namespace GlobalBilgiQuiz.Business.Services.QuizServiceFolder
         private readonly IRepository<Question> _questionRepository;
         private readonly IRepository<Answer> _answerRepository;
         private readonly IRepository<Metric> _metricRepository;
-        private readonly ICacheService<Question> _questionCacheService;
+        private readonly ICacheService _questionCacheService;
         public QuizService(IRepository<Question> questionRepository,
             IRepository<Answer> answerRepository,
-            IRepository<Metric> metricRepository, ICacheService<Question> questionCacheService) : base()
+            IRepository<Metric> metricRepository, ICacheService questionCacheService) : base()
         {
             _questionRepository = questionRepository;
             _answerRepository = answerRepository;

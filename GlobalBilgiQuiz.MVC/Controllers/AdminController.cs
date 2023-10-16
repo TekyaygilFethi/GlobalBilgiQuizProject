@@ -1,4 +1,5 @@
 ﻿using GlobalBilgiQuiz.Business.Services.AdminServiceFolder;
+using GlobalBilgiQuiz.Business.Services.CacheServiceFolder;
 using GlobalBilgiQuiz.Business.SignalRHubs;
 using GlobalBilgiQuiz.Business.UnitOfWorkFolder;
 using GlobalBilgiQuiz.Data.Services.AdminServiceFolder;
@@ -17,14 +18,16 @@ namespace GlobalBilgiQuiz.MVC.Controllers
         private readonly string _counterDateFilePath = string.Empty;
         private readonly string _currentQuestionFilePath = string.Empty;
         private IHubContext<QuizHub> _quizHubContext;
+        private ICacheService _cacheService;
 
 
-        public AdminController(IAdminService adminService, IWebHostEnvironment environment, IHubContext<QuizHub> quizHubContext, IUnitOfWork uow) : base(uow)
+        public AdminController(IAdminService adminService, IWebHostEnvironment environment, IHubContext<QuizHub> quizHubContext, ICacheService cacheService, IUnitOfWork uow) : base(uow)
         {
             _adminService = adminService;
             _counterDateFilePath = Path.Combine(environment.WebRootPath, "files", "CounterDateFile.txt");
             _currentQuestionFilePath = Path.Combine(environment.WebRootPath, "files", "CurrentQuestion.txt");
             _quizHubContext = quizHubContext;
+            _cacheService = cacheService;
         }
 
         public IActionResult Start()
@@ -54,13 +57,13 @@ namespace GlobalBilgiQuiz.MVC.Controllers
         [ServiceFilter(typeof(AdminFilter)), HttpPost]
         public async Task<IActionResult> StartContestPost()
         {
-            System.IO.File.WriteAllText(_counterDateFilePath, DateTime.Now.AddSeconds(32).ToString("dd.MM.yyyy HH:mm:ss"));
+            _cacheService.Set("RemainingTime", DateTime.Now.AddSeconds(32).ToString("dd.MM.yyyy HH:mm:ss"), DateTime.Now.AddMinutes(1));
 
-            int currentQuestion = int.Parse(System.IO.File.ReadAllText(_currentQuestionFilePath));
-
-            if(currentQuestion == 0)
+            var currentQuestion = _cacheService.Get<int?>("CurrentQuestion");
+            if(currentQuestion == null || currentQuestion == 0)
             {
-                System.IO.File.WriteAllText(_currentQuestionFilePath, "1");
+                _cacheService.Set("CurrentQuestion", 1, DateTime.Now.AddHours(1));
+
             }
 
             await _quizHubContext.Clients.All.SendAsync("startcontest");
