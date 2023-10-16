@@ -1,14 +1,11 @@
 ﻿using GlobalBilgiQuiz.Business.Repositories;
 using GlobalBilgiQuiz.Business.Services.Base;
-using GlobalBilgiQuiz.Business.UnitOfWorkFolder;
+using GlobalBilgiQuiz.Business.Services.RedisServiceFolder;
 using GlobalBilgiQuiz.Data.POCO;
 using GlobalBilgiQuiz.Data.Services.QuizServiceFolder;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
+using Newtonsoft.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace GlobalBilgiQuiz.Business.Services.QuizServiceFolder
 {
@@ -18,27 +15,64 @@ namespace GlobalBilgiQuiz.Business.Services.QuizServiceFolder
         private readonly IRepository<Question> _questionRepository;
         private readonly IRepository<Answer> _answerRepository;
         private readonly IRepository<Metric> _metricRepository;
+        private readonly RedisService _redisService;
         public QuizService(IRepository<Question> questionRepository,
             IRepository<Answer> answerRepository,
-            IRepository<Metric> metricRepository) : base()
+            IRepository<Metric> metricRepository,
+            RedisService redisService) : base()
         {
             _questionRepository = questionRepository;
             _answerRepository = answerRepository;
             _metricRepository = metricRepository;
+            _redisService = redisService;
         }
 
         public ContestObject GetQuestionObject(int currentQuestionOrder)
         {
-            var questionObject = _questionRepository
-                .GetSingle(_ => _.Order == currentQuestionOrder, includeExpressions: new List<string> { "Answers" });
+            
+            var redisKey = currentQuestionOrder.ToString();
+            var result = _redisService.GetDb().KeyExists(redisKey);
+
+            if (!result)
+            {
+                var questionObject = _questionRepository
+                    .GetSingle(_ => _.Order == currentQuestionOrder, includeExpressions: new List<string> { "Answers" });
+
+                var options = new JsonSerializerOptions
+                {
+                    ReferenceHandler = ReferenceHandler.Preserve,
+                    Converters = { new JsonStringEnumConverter() },
+                    IgnoreNullValues = true
+                };
+
+                var jsonString = System.Text.Json.JsonSerializer.Serialize(questionObject, options);
+
+                _redisService.GetDb().StringSet(redisKey, jsonString);
+
+                return new ContestObject
+                {
+                    QuestionId = questionObject.Id,
+                    QuestionMetricId = questionObject.Id,
+                    QuestionOrder = currentQuestionOrder,
+                    QuestionText = questionObject.Text,
+                    ShowcaseAnswers = questionObject.Answers.Select(_ => new ContestObjectAnswer
+                    {
+                        AnswerId = _.Id,
+                        AnswerText = _.Text
+                    })
+                };
+            }
+
+            var serializedResult = _redisService.GetDb().StringGet(redisKey);
+            var deserializedResult =  JsonConvert.DeserializeObject<JsonContestObject>(serializedResult);
 
             return new ContestObject
             {
-                QuestionId = questionObject.Id,
-                QuestionMetricId = questionObject.Id,
+                QuestionId = deserializedResult.Id,
+                QuestionMetricId = deserializedResult.Id,
                 QuestionOrder = currentQuestionOrder,
-                QuestionText = questionObject.Text,
-                ShowcaseAnswers = questionObject.Answers.Select(_ => new ContestObjectAnswer
+                QuestionText = deserializedResult.Text,
+                ShowcaseAnswers = deserializedResult.Answers.Select(_ => new ContestObjectAnswer
                 {
                     AnswerId = _.Id,
                     AnswerText = _.Text
@@ -91,5 +125,6 @@ namespace GlobalBilgiQuiz.Business.Services.QuizServiceFolder
             totalTrue += metric.TrueCount;
             totalFalse += metric.FalseCount;
         }
+
     }
 }
